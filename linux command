@@ -130,6 +130,3 @@ case $1 in
         echo "Invalid command"
         ;;
 esac
-
-
-//Save this script to a file (e.g., internsctl) and make it executable using chmod +x internsctl.
