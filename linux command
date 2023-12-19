@@ -1,0 +1,135 @@
+#!/bin/bash
+
+# Define the version
+VERSION="v0.1.0"
+
+# Function to display the manual page
+show_manual() {
+    echo "internsctl(1) - Custom Linux Command"
+    echo ""
+    echo "NAME"
+    echo "    internsctl - Perform various operations on the server"
+    echo ""
+    echo "SYNOPSIS"
+    echo "    internsctl [OPTIONS] COMMAND [arg...]"
+    echo ""
+    echo "DESCRIPTION"
+    echo "    internsctl is a custom Linux command to perform various operations on the server."
+    echo ""
+    echo "OPTIONS"
+    echo "    --help      Show help"
+    echo "    --version   Show version"
+    echo ""
+    echo "COMMANDS"
+    echo "    cpu         Get CPU information"
+    echo "    memory      Get memory information"
+    echo "    user        User operations"
+    echo "    file        File operations"
+}
+
+# Function to display help
+show_help() {
+    echo "Usage: internsctl [OPTIONS] COMMAND [arg...]"
+    echo ""
+    echo "Options:"
+    echo "  --help      Show help"
+    echo "  --version   Show version"
+    echo ""
+    echo "Commands:"
+    echo "  cpu         Get CPU information"
+    echo "  memory      Get memory information"
+    echo "  user        User operations"
+    echo "  file        File operations"
+}
+
+# Function to display version
+show_version() {
+    echo "internsctl $VERSION"
+}
+
+# Function to get CPU information
+get_cpu_info() {
+    lscpu
+}
+
+# Function to get memory information
+get_memory_info() {
+    free
+}
+
+# Function to create a new user
+create_user() {
+    username=$1
+    useradd $username
+    passwd $username
+    echo "User $username created successfully."
+}
+
+# Function to list users
+list_users() {
+    if [ "$1" == "--sudo-only" ]; then
+        grep -Po '^sudo.+:\K.*$' /etc/group | tr ',' '\n'
+    else
+        getent passwd | cut -d: -f1
+    fi
+}
+
+# Function to get file information
+get_file_info() {
+    file=$2
+    case $1 in
+        --size|-s)
+            stat -c "%s" $file
+            ;;
+        --permissions|-p)
+            stat -c "%A" $file
+            ;;
+        --owner|-o)
+            stat -c "%U" $file
+            ;;
+        --last-modified|-m)
+            stat -c "%y" $file
+            ;;
+        *)
+            echo "Invalid option"
+            ;;
+    esac
+}
+
+# Parse command-line arguments
+case $1 in
+    --help)
+        show_help
+        ;;
+    --version)
+        show_version
+        ;;
+    cpu)
+        get_cpu_info
+        ;;
+    memory)
+        get_memory_info
+        ;;
+    user)
+        case $2 in
+            create)
+                create_user $3
+                ;;
+            list)
+                list_users $3
+                ;;
+            *)
+                echo "Invalid user command"
+                ;;
+        esac
+        ;;
+    file)
+        get_file_info $2 $3
+        ;;
+    *)
+        echo "Invalid command"
+        ;;
+esac
+
+
+//Save this script to a file (e.g., internsctl) and make it executable using chmod +x internsctl.
