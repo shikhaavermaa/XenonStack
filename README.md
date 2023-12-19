@@ -6,4 +6,4 @@ Frontend - HTML, CSS, JS
 Backend - Java,Python,NodeJS or GOlang
 Database:MySQL, PostgreSQL or MongoDB
 
-The screenshot of the project is attached below:
+The screenshot of the project is attached for reference.
